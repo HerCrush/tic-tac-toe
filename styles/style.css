@@ -16,6 +16,13 @@ h1 {
     padding: 15px;
 }
 
+#container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .board {
     width: 500px;
     height: 500px;
@@ -75,4 +82,10 @@ h1 {
     font-size: 28pt;
     margin: 30px;
     margin-top: 0;
+}
+
+#restart_btn{
+    font-size: 24pt;
+    padding: 10px;
+    margin-top: 50px;
 }

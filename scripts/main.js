@@ -14,7 +14,11 @@ const gameBoard = (() => {
             board.appendChild(box);
             box.addEventListener('click', game.play);
         }
-        document.querySelector('#container').appendChild(board);
+        const restartBtn = document.createElement('button');
+        restartBtn.id = 'restart_btn';
+        restartBtn.textContent = 'RESTART';
+        restartBtn.addEventListener('click', game.restart);
+        document.querySelector('#container').append(board, restartBtn);
     };
 
     return {gameboard, displayGameBoard};
@@ -42,8 +46,12 @@ const game = (() => {
         gameBoard.displayGameBoard();
         player1.marker = 'X';
         player2.marker = 'O';
-        player1.name = prompt('Player 1 name:');
-        player2.name = prompt('Player 2 name:');
+        do {
+        player1.name = prompt('Player 1 name:', 'Player 1');
+        } while (player1.name===null || player1.name === '');
+        do {
+        player2.name = prompt('Player 2 name:', 'Player 2');
+        } while (player2.name===null || player2.name === '');
     };
 
     const playRound = () => {
@@ -115,7 +123,14 @@ const game = (() => {
         document.querySelector('.board').appendChild(gameBoardDisabler);
     };
 
-    return {start, play};
+    const restart = () => {
+        gameBoard.gameboard.length = 0;
+        gameBoard.gameboard.length = 9;
+        document.querySelectorAll('#container *').forEach(e => e.remove());
+        gameBoard.displayGameBoard();
+    };
+
+    return {start, play, restart};
 })();
 
 const playBtn = document.querySelector('#play_button');
