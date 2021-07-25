@@ -9,7 +9,7 @@ const gameBoard = (() => {
         for(let i=0;i<9;i++) {
             const box = document.createElement('div');
             box.classList.add('box');
-            box.dataset.box = i+1;
+            box.dataset.box = i;
             box.textContent = gameboard[i];
             board.appendChild(box);
             box.addEventListener('click', game.play);
@@ -33,6 +33,27 @@ const player = () => {
     return {name, marker};
 };
 
+const aI = (() => {
+    let isFirstMove = true;
+
+    let move;
+
+    const makeFirstMove = () => {
+        do {
+            move = Math.floor(Math.random()*9);
+        } while(gameBoard.gameboard[move]!==undefined);
+        gameBoard.gameboard[move] = 'O';
+        document.querySelector(`div[data-box="${move}"]`).textContent = 'O';
+        aI.isFirstMove = false;
+    };
+
+    const makeMove = () => {
+
+    };
+    
+    return {isFirstMove, makeFirstMove, makeMove};
+})();
+
 const game = (() => {
 
     let turnPlayer;
@@ -54,22 +75,20 @@ const game = (() => {
         } while (player2.name===null || player2.name === '');
     };
 
-    const playRound = () => {
-        if(player1 === turnPlayer) {
-            turnPlayer = player2;
-        }
-        else {
-            turnPlayer = player1;
-        }
+    const playRound = (selectedBox) => {
+        turnPlayer = player1;
+        selectedBox.textContent = gameBoard.gameboard[selectedBox.dataset.box] = turnPlayer.marker;
+        if(checkGame()) return;
+        turnPlayer = player2;
+        if(aI.isFirstMove) aI.makeFirstMove();
+        else aI.makeMove();
+        checkGame();
     };
 
     const play = (e) => {
         const selectedBox = document.querySelector(`div[data-box="${e.target.dataset.box}"]`);
         if(selectedBox.textContent === player1.marker || selectedBox.textContent === player2.marker) return;
-        playRound();
-        selectedBox.textContent = gameBoard.gameboard[e.target.dataset.box-1] = turnPlayer.marker;
-        if(isGameOver()) gameOver();
-        if(isATie()) tie();
+        playRound(selectedBox);
     };
 
     const isGameOver = () => {
@@ -105,6 +124,7 @@ const game = (() => {
         gameOverSign.append(para1, para2);
         gameBoardDisabler.appendChild(gameOverSign);
         document.querySelector('.board').appendChild(gameBoardDisabler);
+        return true;
     };
     
     const tie = () => {
@@ -121,11 +141,18 @@ const game = (() => {
         gameOverSign.append(para1, para2);
         gameBoardDisabler.appendChild(gameOverSign);
         document.querySelector('.board').appendChild(gameBoardDisabler);
+        return true;
     };
+
+    const checkGame = () => {
+        if(isGameOver()) return gameOver();
+        if(isATie()) return tie();
+    }
 
     const restart = () => {
         gameBoard.gameboard.length = 0;
         gameBoard.gameboard.length = 9;
+        aI.isFirstMove = true;
         document.querySelectorAll('#container *').forEach(e => e.remove());
         gameBoard.displayGameBoard();
     };

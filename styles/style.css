@@ -43,11 +43,11 @@ h1 {
     border: solid 5px black;
 }
 
-[data-box="1"], [data-box="2"], [data-box="3"] {
+[data-box="0"], [data-box="1"], [data-box="2"] {
     grid-row-start: 3;
 }
 
-[data-box="4"], [data-box="5"], [data-box="6"] {
+[data-box="3"], [data-box="4"], [data-box="5"] {
     grid-row-start: 2;
 }
 
