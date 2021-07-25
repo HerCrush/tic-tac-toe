@@ -6,7 +6,7 @@ const gameBoard = (() => {
     const displayGameBoard = () => {
         const board = document.createElement('div');
         board.classList.add('board');
-        for(let i=0;i<9;i++) {
+        for(let i=0; i<9; i++) {
             const box = document.createElement('div');
             box.classList.add('box');
             box.dataset.box = i;
@@ -48,6 +48,72 @@ const aI = (() => {
     };
 
     const makeMove = () => {
+        move = findBestMove(gameBoard.gameboard);
+        gameBoard.gameboard[move] = 'O';
+        document.querySelector(`div[data-box="${move}"]`).textContent = 'O';
+    };
+
+    const findBestMove = (board) => {
+        let bestMove = null;
+        for(let i=0; i<9; i++) {
+            if(bestMove===null || minimax(board, 0, false)>bestMove) bestMove = i;
+        }
+        return bestMove;
+    };
+
+    const minimax = (board, depth, isMaximizingPlayer) => {
+        if(terminalState(board)!==false) {
+            return terminalState(board);
+        }
+        let theoricalBoard = [];
+        for(let i=0; i<9; i++) {
+            theoricalBoard[i] = board[i];
+        }
+        if(isMaximizingPlayer) {
+            let bestVal = -1000000;
+            for(let j=0; j<9; j++) {
+                if(theoricalBoard[j]!==undefined) continue;
+                theoricalBoard[j] = 'X';
+                let value = minimax(theoricalBoard, depth+1, false)-depth;
+                if(value>bestVal) bestVal=value;
+            }
+            return bestVal;
+        }
+        else {
+            let bestVal = 1000000;
+            for(let k=0; k<9; k++) {
+                if(theoricalBoard[k]!==undefined) continue;
+                theoricalBoard[k] = 'O';
+                let value = minimax(theoricalBoard, depth+1, true)+depth;
+                if(value<bestVal) bestVal=value;
+            }
+            return bestVal;
+        }
+    };
+
+    const terminalState = (board) => {
+        for(let i=0; i<9; i+=3) {
+            if(board[i]===board[i+1] && board[i+1]===board[i+2]) {
+                if(board[i]==='X') return 10;
+                if(board[i]==='O') return -10;
+            }
+        }
+        for(let i=0; i<3; i++) {
+            if(board[i]===board[i+3] && board[i+3]===board[i+6]) {
+                if(board[i]==='X') return 10;
+                if(board[i]==='O') return -10;
+            }
+        }
+        if(board[0]===board[4] && board[4]===board[8]) {
+            if(board[0]==='X') return 10;
+            if(board[0]==='O') return -10;
+        }
+        if(board[2]===board[4] && board[4]===board[6]) {
+            if(board[2]==='X') return 10;
+            if(board[2]==='O') return -10;
+        }
+        if(board.includes(undefined)) return false;
+        else return 0;
 
     };
     
