@@ -68,7 +68,10 @@ const game = (() => {
         if(selectedBox.textContent === player1.marker || selectedBox.textContent === player2.marker) return;
         playRound();
         selectedBox.textContent = gameBoard.gameboard[e.target.dataset.box-1] = turnPlayer.marker;
-        if(isGameOver()) gameOver();
+        if(isGameOver()) {
+            gameOver();
+            return;
+        }
         if(isATie()) tie();
     };
 
